@@ -1,12 +1,18 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.views.generic import ListView
 
 from main.models import Student
 
 
+# class StudentListView(ListView):
+#     model = Student
+#     template_name = 'main/index.html'
+
 def index(request):
     student_list = Student.objects.all()
     context = {
-        'object_list': student_list
+        'object_list': student_list,
+        'title': 'Главная'
     }
     return render(request, 'main/index.html', context)
 
@@ -17,5 +23,15 @@ def contact(request):
         message = request.POST.get('message')
         print(f'{name} ({email}): {message}')
 
-    return render(request, 'main/contact.html')
+    context = {
+        'title': 'Контакты'
+    }
 
+    return render(request, 'main/contact.html', context)
+
+def view_student(request, pk):
+    student_item = get_object_or_404(Student, pk=pk)
+    context = {
+        'object': student_item
+    }
+    return render(request, 'main/student_ditail.html', context)
